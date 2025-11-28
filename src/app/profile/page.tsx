@@ -125,30 +125,6 @@ export default function ProfilePage() {
 
                     {/* Right Column: Prompt & Action */}
                     <div className="space-y-8">
-                        <Card className="p-6 bg-neutral-900 text-white border-neutral-800">
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="text-lg font-semibold flex items-center">
-                                    <Sparkles className="w-5 h-5 mr-2 text-yellow-400" />
-                                    Instruções do seu estilo de escrita
-                                </h3>
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    onClick={handleCopy}
-                                    className={cn("transition-all", copied && "bg-green-500 text-white hover:bg-green-600")}
-                                >
-                                    {copied ? <CheckCircle className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-                                    {copied ? "Copiado!" : "Copiar"}
-                                </Button>
-                            </div>
-                            <p className="text-neutral-400 text-sm mb-4">
-                                Copie este prompt e cole nas configurações do Jus IA para que ele escreva como você.
-                            </p>
-                            <div className="bg-neutral-800 p-4 rounded-lg font-mono text-sm text-neutral-300 h-[400px] overflow-y-auto whitespace-pre-wrap border border-neutral-700">
-                                {analysisResult.system_prompt}
-                            </div>
-                        </Card>
-
                         <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 p-8 rounded-2xl border border-primary/20 text-center space-y-6">
                             <h3 className="text-2xl font-bold text-neutral-900">Pronto para usar?</h3>
                             <p className="text-neutral-600">

@@ -22,6 +22,7 @@ export default function CreateProfilePage() {
         setIsAnalyzing
     } = useAnalysis();
 
+    const [step, setStep] = useState<"selection" | "input">("selection");
     const [mode, setMode] = useState<Mode>("text");
     const [error, setError] = useState<string | null>(null);
 
@@ -57,114 +58,156 @@ export default function CreateProfilePage() {
         }
     };
 
+    const handleSelection = (selectedMode: Mode) => {
+        setMode(selectedMode);
+        setStep("input");
+    };
+
     return (
         <main className="min-h-screen bg-neutral-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto">
+            <div className="max-w-4xl mx-auto">
                 <div className="mb-8">
-                    <Link href="/" className="inline-flex items-center text-neutral-500 hover:text-neutral-900 transition-colors">
+                    <button
+                        onClick={() => step === "input" ? setStep("selection") : router.push("/")}
+                        className="inline-flex items-center text-neutral-500 hover:text-neutral-900 transition-colors"
+                    >
                         <ChevronLeft className="w-4 h-4 mr-1" /> Voltar
-                    </Link>
+                    </button>
                 </div>
 
-                <div className="text-center space-y-2 mb-8">
-                    <h1 className="text-3xl font-bold text-neutral-900">Envie seus documentos</h1>
-                    <p className="text-neutral-500">
-                        Para uma análise precisa, precisamos de uma amostra significativa do seu estilo de escrita.
-                    </p>
-                </div>
+                {step === "selection" ? (
+                    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="text-center space-y-4">
+                            <h1 className="text-4xl font-bold text-neutral-900">Como funciona</h1>
+                            <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
+                                Vamos analisar seu estilo de escrita para criar um perfil único.
+                                <br />
+                                Depois, você poderá aplicar esse estilo diretamente no Jus IA.
+                            </p>
+                        </div>
 
-                <Card className="w-full space-y-6 p-6">
-                    <div className="flex p-1 bg-neutral-100 rounded-lg">
-                        <button
-                            onClick={() => setMode("text")}
-                            className={cn(
-                                "flex-1 flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all",
-                                mode === "text"
-                                    ? "bg-white text-neutral-900 shadow-sm"
-                                    : "text-neutral-500 hover:text-neutral-900"
-                            )}
-                        >
-                            <FileText className="w-4 h-4 mr-2" />
-                            Colar Texto
-                        </button>
-                        <button
-                            onClick={() => setMode("files")}
-                            className={cn(
-                                "flex-1 flex items-center justify-center py-2 text-sm font-medium rounded-md transition-all",
-                                mode === "files"
-                                    ? "bg-white text-neutral-900 shadow-sm"
-                                    : "text-neutral-500 hover:text-neutral-900"
-                            )}
-                        >
-                            <Upload className="w-4 h-4 mr-2" />
-                            Upload de Arquivo
-                        </button>
-                    </div>
-
-                    {mode === "text" ? (
-                        <div className="space-y-4">
-                            <div className="relative">
-                                <textarea
-                                    value={inputText}
-                                    onChange={(e) => {
-                                        setInputText(e.target.value);
-                                        setError(null);
-                                    }}
-                                    placeholder="Cole aqui um texto de sua autoria (petição, artigo, etc.). Recomendamos pelo menos 3000 caracteres para um melhor resultado."
-                                    className="w-full h-96 p-4 rounded-lg border border-neutral-200 focus:border-primary focus:ring-1 focus:ring-primary resize-none text-sm font-mono"
-                                />
-                                <div className="absolute bottom-4 right-4 text-xs text-neutral-400 bg-white/80 px-2 py-1 rounded">
-                                    {inputText.length} caracteres
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <button
+                                onClick={() => handleSelection("text")}
+                                className="group relative p-8 bg-white rounded-2xl shadow-sm hover:shadow-xl border border-neutral-200 hover:border-primary/50 transition-all text-left space-y-4"
+                            >
+                                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                    <FileText className="w-6 h-6 text-blue-600" />
                                 </div>
-                            </div>
-
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-neutral-600">Qualidade da amostra:</span>
-                                    <span className={cn("font-medium",
-                                        quality.label === "Insuficiente" ? "text-red-600" :
-                                            quality.label === "Bom" ? "text-yellow-600" : "text-green-600"
-                                    )}>
-                                        {quality.label}
-                                    </span>
-                                </div>
-                                <div className="h-2 w-full bg-neutral-100 rounded-full overflow-hidden">
-                                    <div
-                                        className={cn("h-full transition-all duration-500", quality.color)}
-                                        style={{ width: `${Math.min((inputText.length / 5000) * 100, 100)}%` }}
-                                    />
-                                </div>
+                                <h3 className="text-xl font-bold text-neutral-900">Colar Texto</h3>
                                 <p className="text-neutral-500">
-                                    Para melhores resultados, envie documentos que representem bem seu estilo, como:
-                                    <br />
-                                    <span className="font-medium text-neutral-700">Petições Iniciais, Contratos ou Pareceres Jurídicos</span> escritos por você.
+                                    Copie e cole um trecho de uma peça ou documento que você já escreveu.
+                                    Ideal para análises rápidas.
                                 </p>
-                                <p className="text-xs text-neutral-500">
-                                    Mínimo: 1000 • Recomendado: 3000+ • Ideal: 5000+
+                                <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity text-primary">
+                                    <ArrowRight className="w-6 h-6" />
+                                </div>
+                            </button>
+
+                            <button
+                                onClick={() => handleSelection("files")}
+                                className="group relative p-8 bg-white rounded-2xl shadow-sm hover:shadow-xl border border-neutral-200 hover:border-primary/50 transition-all text-left space-y-4"
+                            >
+                                <div className="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                                    <Upload className="w-6 h-6 text-purple-600" />
+                                </div>
+                                <h3 className="text-xl font-bold text-neutral-900">Upload de Arquivos</h3>
+                                <p className="text-neutral-500">
+                                    Envie de 1 a 5 documentos (PDF, DOCX) para uma análise mais profunda e completa do seu estilo.
                                 </p>
-                            </div>
+                                <div className="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity text-primary">
+                                    <ArrowRight className="w-6 h-6" />
+                                </div>
+                            </button>
                         </div>
-                    ) : (
-                        <FileUpload onFilesSelected={setUploadedFiles} maxFiles={5} />
-                    )}
-
-                    {error && (
-                        <div className="flex items-center p-3 text-sm text-error bg-red-50 rounded-lg">
-                            <AlertCircle className="w-4 h-4 mr-2" />
-                            {error}
-                        </div>
-                    )}
-
-                    <div className="flex justify-end pt-4">
-                        <Button
-                            onClick={handleAnalyze}
-                            disabled={mode === "text" ? inputText.length < 50 : uploadedFiles.length === 0}
-                            className="w-full md:w-auto"
-                        >
-                            Analisar estilo de escrita <ArrowRight className="ml-2 w-4 h-4" />
-                        </Button>
                     </div>
-                </Card>
+                ) : (
+                    <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                        <div className="text-center space-y-2 mb-8">
+                            <h2 className="text-3xl font-bold text-neutral-900">
+                                {mode === "text" ? "Cole seu texto" : "Envie seus documentos"}
+                            </h2>
+                            <p className="text-neutral-500">
+                                {mode === "text"
+                                    ? "Cole um texto de sua autoria para analisarmos."
+                                    : "Selecione os arquivos que melhor representam seu estilo."}
+                            </p>
+                        </div>
+
+                        <Card className="w-full space-y-6 p-6">
+                            {mode === "text" ? (
+                                <div className="space-y-4">
+                                    <div className="relative">
+                                        <textarea
+                                            value={inputText}
+                                            onChange={(e) => {
+                                                setInputText(e.target.value);
+                                                setError(null);
+                                            }}
+                                            placeholder="Cole aqui um texto de sua autoria (petição, artigo, etc.). Recomendamos pelo menos 3000 caracteres para um melhor resultado."
+                                            className="w-full h-96 p-4 rounded-lg border border-neutral-200 focus:border-primary focus:ring-1 focus:ring-primary resize-none text-sm font-mono"
+                                        />
+                                        <div className="absolute bottom-4 right-4 text-xs text-neutral-400 bg-white/80 px-2 py-1 rounded">
+                                            {inputText.length} caracteres
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-neutral-600">Qualidade da amostra:</span>
+                                            <span className={cn("font-medium",
+                                                quality.label === "Insuficiente" ? "text-red-600" :
+                                                    quality.label === "Bom" ? "text-yellow-600" : "text-green-600"
+                                            )}>
+                                                {quality.label}
+                                            </span>
+                                        </div>
+                                        <div className="h-2 w-full bg-neutral-100 rounded-full overflow-hidden">
+                                            <div
+                                                className={cn("h-full transition-all duration-500", quality.color)}
+                                                style={{ width: `${Math.min((inputText.length / 5000) * 100, 100)}%` }}
+                                            />
+                                        </div>
+                                        <p className="text-neutral-500">
+                                            Para melhores resultados, envie documentos que representem bem seu estilo, como:
+                                            <br />
+                                            <span className="font-medium text-neutral-700">Petições Iniciais, Contratos ou Pareceres Jurídicos</span> escritos por você.
+                                        </p>
+                                        <p className="text-xs text-neutral-500">
+                                            Mínimo: 1000 • Recomendado: 3000+ • Ideal: 5000+
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <FileUpload onFilesSelected={setUploadedFiles} maxFiles={5} />
+                                    <p className="text-neutral-500 text-center text-sm">
+                                        Para melhores resultados, envie documentos que representem bem seu estilo, como:
+                                        <br />
+                                        <span className="font-medium text-neutral-700">Petições Iniciais, Contratos ou Pareceres Jurídicos</span> escritos por você.
+                                    </p>
+                                </div>
+                            )}
+
+                            {error && (
+                                <div className="flex items-center p-3 text-sm text-error bg-red-50 rounded-lg">
+                                    <AlertCircle className="w-4 h-4 mr-2" />
+                                    {error}
+                                </div>
+                            )}
+
+                            <div className="flex justify-end pt-4">
+                                <Button
+                                    onClick={handleAnalyze}
+                                    disabled={mode === "text" ? inputText.length < 50 : uploadedFiles.length === 0}
+                                    className="w-full md:w-auto"
+                                >
+                                    Analisar estilo de escrita <ArrowRight className="ml-2 w-4 h-4" />
+                                </Button>
+                            </div>
+                        </Card>
+                    </div>
+                )}
             </div>
         </main>
     );
