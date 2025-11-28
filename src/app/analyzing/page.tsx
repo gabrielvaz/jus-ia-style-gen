@@ -20,6 +20,7 @@ export default function ProcessingPage() {
     const router = useRouter();
     const { inputText, uploadedFiles, setAnalysisResult, isAnalyzing } = useAnalysis();
     const [currentStep, setCurrentStep] = useState(0);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         if (!isAnalyzing) {
@@ -62,8 +63,9 @@ export default function ProcessingPage() {
                     errorMessage = String(error);
                 }
 
-                alert(`Erro na análise:\n\n${errorMessage}\n\nVerifique o console para mais detalhes.`);
-                router.push("/create");
+                setError(errorMessage);
+                // Stop the interval if there's an error
+                clearInterval(interval);
             }
         };
 
@@ -71,6 +73,43 @@ export default function ProcessingPage() {
 
         return () => clearInterval(interval);
     }, [inputText, uploadedFiles, isAnalyzing, router, setAnalysisResult]);
+
+    if (error) {
+        return (
+            <main className="min-h-screen bg-neutral-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+                <div className="max-w-md w-full space-y-8">
+                    <Card className="p-8 space-y-6 border-red-200 bg-red-50">
+                        <div className="text-center space-y-4">
+                            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                                <span className="text-3xl">⚠️</span>
+                            </div>
+                            <h2 className="text-xl font-bold text-red-800">Erro na Análise</h2>
+                            <p className="text-sm text-red-600 bg-white p-4 rounded border border-red-200 font-mono text-left overflow-auto max-h-40">
+                                {error}
+                            </p>
+                            <div className="flex flex-col gap-3 pt-4">
+                                <button
+                                    onClick={() => router.push("/create")}
+                                    className="w-full py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+                                >
+                                    Tentar Novamente
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(error);
+                                        alert("Erro copiado para a área de transferência!");
+                                    }}
+                                    className="w-full py-2 px-4 bg-white border border-red-300 text-red-700 hover:bg-red-50 rounded-lg font-medium transition-colors"
+                                >
+                                    Copiar Erro
+                                </button>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            </main>
+        );
+    }
 
     return (
         <main className="min-h-screen bg-neutral-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
