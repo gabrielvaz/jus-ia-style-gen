@@ -42,7 +42,7 @@ export default function ProfilePage() {
                         <CheckCircle className="w-12 h-12" />
                     </div>
                     <h1 className="text-4xl font-bold text-neutral-900">Perfil Gerado com Sucesso!</h1>
-                    <p className="text-xl text-neutral-600 max-w-md mx-auto">
+                    <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
                         Sua análise de estilo foi concluída. Descubra como a IA vê sua escrita.
                     </p>
                     <Button

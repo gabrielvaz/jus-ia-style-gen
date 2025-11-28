@@ -77,7 +77,7 @@ export default function ProcessingPage() {
     if (error) {
         return (
             <main className="min-h-screen bg-neutral-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-                <div className="max-w-md w-full space-y-8">
+                <div className="max-w-2xl w-full space-y-8">
                     <Card className="p-8 space-y-6 border-red-200 bg-red-50">
                         <div className="text-center space-y-4">
                             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
