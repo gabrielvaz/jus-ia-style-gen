@@ -3,6 +3,10 @@ import { extractText } from "@/lib/text-extractor";
 import { analyzeWritingStyle } from "@/lib/openrouter";
 
 export async function POST(req: NextRequest) {
+    // Debug: verificar se variável de ambiente está disponível
+    console.log('[API] OPENROUTER_API_KEY exists:', !!process.env.OPENROUTER_API_KEY);
+    console.log('[API] All env keys:', Object.keys(process.env).filter(k => k.includes('OPEN')));
+
     try {
         let corpus = "";
         const contentType = req.headers.get("content-type") || "";
