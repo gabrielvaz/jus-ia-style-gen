@@ -1,15 +1,10 @@
 import axios from "axios";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const MODEL = "google/gemini-2.0-flash-001";
-
-// Debug log (será removido após verificação)
-if (typeof window === 'undefined') {
-    console.log('[Server] OPENROUTER_API_KEY exists:', !!OPENROUTER_API_KEY);
-    if (OPENROUTER_API_KEY) {
-        console.log('[Server] Key start:', OPENROUTER_API_KEY.substring(0, 10) + '...');
-    }
-}
+const MODELS = [
+    "google/gemini-2.0-flash-001",
+    "google/gemini-2.0-flash-lite-preview-02-05:free" // Fallback closest to user request
+];
 
 export interface AnalysisResult {
     summary: string;
@@ -67,41 +62,55 @@ Retorne APENAS um JSON válido com a seguinte estrutura, sem markdown ou texto a
 }
 `;
 
-    try {
-        const response = await axios.post(
-            "https://openrouter.ai/api/v1/chat/completions",
-            {
-                model: MODEL,
-                messages: [
-                    {
-                        role: "user",
-                        content: prompt,
-                    },
-                ],
-                response_format: { type: "json_object" },
-            },
-            {
-                headers: {
-                    "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-                    "Content-Type": "application/json",
-                    "HTTP-Referer": "https://jus-ia-style-gen.vercel.app", // Placeholder
-                    "X-Title": "Jus IA Style Gen",
-                },
-            }
-        );
+    let lastError: any;
 
-        const content = response.data.choices[0].message.content;
-
-        // Parse JSON safely
+    for (const model of MODELS) {
         try {
-            return JSON.parse(content);
-        } catch (e) {
-            console.error("Failed to parse JSON from LLM response:", content);
-            // Fallback or retry logic could go here, but for prototype we throw
-            throw new Error("Invalid JSON response from LLM");
+            console.log(`[Server] Attempting analysis with model: ${model}`);
+
+            const response = await axios.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                {
+                    model: model,
+                    messages: [
+                        {
+                            role: "user",
+                            content: prompt,
+                        },
+                    ],
+                    response_format: { type: "json_object" },
+                },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": "https://jus-ia-style-gen.vercel.app",
+                        "X-Title": "Jus IA Style Gen",
+                    },
+                    timeout: 60000, // 60s timeout
+                }
+            );
+
+            const content = response.data.choices[0].message.content;
+
+            // Parse JSON safely
+            try {
+                return JSON.parse(content);
+            } catch (e) {
+                console.error(`[Server] Failed to parse JSON from ${model}:`, content);
+                throw new Error(`Invalid JSON response from ${model}`);
+            }
+
+        } catch (error) {
+            console.error(`[Server] Error with model ${model}:`, error instanceof Error ? error.message : String(error));
+            if (axios.isAxiosError(error) && error.response) {
+                console.error(`[Server] API Response:`, JSON.stringify(error.response.data));
+            }
+            lastError = error;
+            // Continue to next model
         }
-    } catch (error) {
-        console.error("Error calling OpenRouter:", error);
-        throw error;
     }
+
+    // If we get here, all models failed
+    throw lastError || new Error("All models failed to analyze the text.");
 }

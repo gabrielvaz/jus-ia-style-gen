@@ -51,11 +51,18 @@ export default function ProcessingPage() {
                 setTimeout(() => router.push("/profile"), 1000);
             } catch (error) {
                 console.error("Analysis failed:", error);
-                // alert("Ocorreu um erro na análise. Tente novamente.");
-                // router.push("/create");
-                setAnalysisResult(null); // Ensure no result is shown
-                // We could add a UI state for error here, but for now let's just stop the redirect so we can see the console/network error
-                alert("Erro na análise: " + (axios.isAxiosError(error) ? error.response?.data?.details || error.message : String(error)));
+                setAnalysisResult(null);
+
+                let errorMessage = "Ocorreu um erro desconhecido.";
+                if (axios.isAxiosError(error)) {
+                    errorMessage = error.response?.data?.details || error.response?.data?.error || error.message;
+                } else if (error instanceof Error) {
+                    errorMessage = error.message;
+                } else {
+                    errorMessage = String(error);
+                }
+
+                alert(`Erro na análise:\n\n${errorMessage}\n\nVerifique o console para mais detalhes.`);
                 router.push("/create");
             }
         };
