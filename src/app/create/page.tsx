@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FileUpload } from "@/components/ui/FileUpload";
-import { ArrowRight, AlertCircle, FileText, Upload, ChevronLeft } from "lucide-react";
+import { ArrowRight, AlertCircle, FileText, Upload, ChevronLeft, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAnalysis } from "@/context/AnalysisContext";
 import Link from "next/link";
@@ -125,7 +125,7 @@ export default function CreateProfilePage() {
                     <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                         <div className="text-center space-y-2 mb-8">
                             <h2 className="text-3xl font-bold text-neutral-900">
-                                {mode === "text" ? "Cole seu texto" : "Envie seus documentos"}
+                                {mode === "text" ? "Cole um texto que represente seu estilo" : "Envie seus documentos"}
                             </h2>
                             <p className="text-neutral-500">
                                 {mode === "text"
@@ -168,12 +168,19 @@ export default function CreateProfilePage() {
                                                 style={{ width: `${Math.min((inputText.length / 5000) * 100, 100)}%` }}
                                             />
                                         </div>
-                                        <p className="text-neutral-500">
-                                            Para melhores resultados, envie documentos que representem bem seu estilo, como:
-                                            <br />
-                                            <span className="font-medium text-neutral-700">Petições Iniciais, Contratos ou Pareceres Jurídicos</span> escritos por você.
-                                        </p>
-                                        <p className="text-xs text-neutral-500">
+
+                                        <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-start gap-3">
+                                            <div className="p-1 bg-blue-100 rounded-full text-blue-600 mt-0.5">
+                                                <Sparkles className="w-4 h-4" />
+                                            </div>
+                                            <div className="text-sm text-blue-800">
+                                                <p className="font-semibold mb-1">Dica para melhores resultados</p>
+                                                <p>
+                                                    Envie textos que representem bem seu estilo, como <span className="font-medium">Petições Iniciais, Contratos ou Pareceres Jurídicos</span> escritos por você.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <p className="text-xs text-neutral-500 text-right">
                                             Mínimo: 1000 • Recomendado: 3000+ • Ideal: 5000+
                                         </p>
                                     </div>

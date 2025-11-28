@@ -41,7 +41,9 @@ ${corpus}
 ---
 Instruções:
 1. Analise detalhadamente o estilo: tom, vocabulário, estrutura, uso de citações, formalidade, etc.
-2. Gere um resumo em texto corrido que descreva "Seu estilo de escrita". **Importante**: Inclua elogios genuínos sobre a clareza, persuasão ou técnica do advogado. Faça com que ele se sinta valorizado.
+2. Gere um resumo em texto corrido que descreva "Seu estilo de escrita".
+   - **Importante**: Inclua elogios genuínos sobre a clareza, persuasão ou técnica do advogado.
+   - Detalhe especificamente sobre: uso de formalidade, complexidade das frases, tecnicidade, uso de citações, foco em fatos e fundamentação.
 3. Avalie as seguintes dimensões de 0 a 100:
    - Formalidade
    - Complexidade das frases
@@ -56,6 +58,7 @@ Instruções:
    - Defina o **nível de formalidade** e o **tom de fala** (ex: combativo, técnico, conciliador).
    - Defina o **sentimento** da escrita.
    - Inclua exemplos de como estruturar os argumentos baseados no estilo analisado.
+   - **CRÍTICO**: O texto deste campo ("system_prompt") deve ser APENAS TEXTO PURO. NÃO USE MARKDOWN, negrito, itálico ou listas formatadas neste campo específico.
 
 Retorne APENAS um JSON válido com a seguinte estrutura, sem markdown ou texto adicional:
 {

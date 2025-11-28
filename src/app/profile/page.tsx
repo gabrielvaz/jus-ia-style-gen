@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useAnalysis } from "@/context/AnalysisContext";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { ArrowLeft, CheckCircle, Copy, ExternalLink, Sparkles } from "lucide-react";
+import { JusIALogo } from "@/components/JusIALogo";
+import { ArrowLeft, CheckCircle, ExternalLink, Sparkles } from "lucide-react";
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from "recharts";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +14,6 @@ export default function ProfilePage() {
     const router = useRouter();
     const { analysisResult, reset } = useAnalysis();
     const [showResults, setShowResults] = useState(false);
-    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         if (!analysisResult) {
@@ -23,25 +23,26 @@ export default function ProfilePage() {
 
     if (!analysisResult) return null;
 
-    const handleCopy = () => {
-        navigator.clipboard.writeText(analysisResult.system_prompt);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-    };
-
     const handleJusIA = () => {
-        const encodedPrompt = encodeURIComponent(analysisResult.system_prompt);
+        // Strip markdown (basic stripping for bold/italic/code)
+        const cleanPrompt = analysisResult.system_prompt
+            .replace(/\*\*/g, "")
+            .replace(/\*/g, "")
+            .replace(/`/g, "")
+            .replace(/#/g, "");
+
+        const encodedPrompt = encodeURIComponent(cleanPrompt);
         window.open(`https://ia.jusbrasil.com.br/conversa?q=${encodedPrompt}`, "_blank");
     };
 
     if (!showResults) {
         return (
             <main className="min-h-screen bg-neutral-50 flex items-center justify-center p-4">
-                <div className="text-center space-y-8 animate-in fade-in zoom-in duration-500">
+                <div className="text-center space-y-8 animate-in fade-in zoom-in duration-500 flex flex-col items-center">
                     <div className="inline-flex items-center justify-center w-24 h-24 bg-green-100 rounded-full text-green-600 mb-4">
                         <CheckCircle className="w-12 h-12" />
                     </div>
-                    <h1 className="text-4xl font-bold text-neutral-900">Perfil Gerado com Sucesso!</h1>
+                    <h1 className="text-4xl font-bold text-neutral-900">Perfil de estilo de escrita gerado com sucesso</h1>
                     <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
                         Sua análise de estilo foi concluída. Descubra como a IA vê sua escrita.
                     </p>
@@ -72,11 +73,15 @@ export default function ProfilePage() {
                     <Button variant="ghost" onClick={() => { reset(); router.push("/"); }}>
                         <ArrowLeft className="mr-2 w-4 h-4" /> Início
                     </Button>
-                    <h1 className="text-2xl font-bold text-neutral-900">Seu Perfil de Estilo</h1>
+                    <div className="flex items-center gap-4">
+                        <JusIALogo />
+                        <div className="h-6 w-px bg-neutral-200" />
+                        <h1 className="text-xl font-semibold text-neutral-900">Seu Perfil de Estilo</h1>
+                    </div>
                 </div>
 
                 <div className="grid lg:grid-cols-2 gap-8">
-                    {/* Left Column: Visuals & Summary */}
+                    {/* Left Column: Visuals */}
                     <div className="space-y-8">
                         <Card className="p-6">
                             <h3 className="text-lg font-semibold mb-6">Dimensões do Estilo</h3>
@@ -114,17 +119,17 @@ export default function ProfilePage() {
                                 ))}
                             </div>
                         </Card>
+                    </div>
 
+                    {/* Right Column: Summary & Action */}
+                    <div className="space-y-8">
                         <Card className="p-6">
                             <h3 className="text-lg font-semibold mb-4">Resumo da Análise</h3>
-                            <p className="text-neutral-600 leading-relaxed">
+                            <p className="text-neutral-600 leading-relaxed whitespace-pre-wrap">
                                 {analysisResult.summary}
                             </p>
                         </Card>
-                    </div>
 
-                    {/* Right Column: Prompt & Action */}
-                    <div className="space-y-8">
                         <div className="bg-gradient-to-r from-primary/10 to-purple-500/10 p-8 rounded-2xl border border-primary/20 text-center space-y-6">
                             <h3 className="text-2xl font-bold text-neutral-900">Pronto para usar?</h3>
                             <p className="text-neutral-600">
