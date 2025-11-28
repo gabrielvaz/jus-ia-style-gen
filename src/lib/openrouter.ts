@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const MODEL = "google/gemini-2.0-flash-exp:free";
+const MODEL = "google/gemini-2.0-flash-001";
 
 // Debug log (será removido após verificação)
 if (typeof window === 'undefined') {
