@@ -2,8 +2,8 @@ import axios from "axios";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const MODELS = [
-    "google/gemini-2.0-flash-001",
-    "google/gemini-2.0-flash-lite-preview-02-05:free" // Fallback closest to user request
+    "google/gemini-2.0-flash-lite-preview-02-05:free", // Free model first
+    "google/gemini-2.0-flash-001", // Paid/Standard model second
 ];
 
 export interface AnalysisResult {
@@ -109,8 +109,14 @@ Retorne APENAS um JSON válido com a seguinte estrutura, sem markdown ou texto a
 
         } catch (error) {
             console.error(`[Server] Error with model ${model}:`, error instanceof Error ? error.message : String(error));
-            if (axios.isAxiosError(error) && error.response) {
-                console.error(`[Server] API Response:`, JSON.stringify(error.response.data));
+            if (axios.isAxiosError(error)) {
+                if (error.response) {
+                    console.error(`[Server] API Response:`, JSON.stringify(error.response.data));
+                    // If 401, it's likely a key issue, so we might want to stop trying other models if the key is invalid for all
+                    if (error.response.status === 401) {
+                        throw new Error("Erro 401: Chave de API inválida ou não autorizada. Verifique se sua chave OpenRouter está correta e se você tem créditos/permissão para usar este modelo.");
+                    }
+                }
             }
             lastError = error;
             // Continue to next model
@@ -118,5 +124,5 @@ Retorne APENAS um JSON válido com a seguinte estrutura, sem markdown ou texto a
     }
 
     // If we get here, all models failed
-    throw lastError || new Error("All models failed to analyze the text.");
+    throw lastError || new Error("Falha na análise. Verifique sua chave de API e tente novamente.");
 }
