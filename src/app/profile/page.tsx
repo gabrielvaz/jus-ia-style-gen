@@ -129,7 +129,7 @@ export default function ProfilePage() {
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-lg font-semibold flex items-center">
                                     <Sparkles className="w-5 h-5 mr-2 text-yellow-400" />
-                                    System Prompt Gerado
+                                    Instruções do seu estilo de escrita
                                 </h3>
                                 <Button
                                     variant="secondary"

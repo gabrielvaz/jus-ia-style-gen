@@ -33,7 +33,7 @@ export async function analyzeWritingStyle(corpus: string): Promise<AnalysisResul
 
     const prompt = `
 Você é um especialista em análise linguística e jurídica. Sua tarefa é analisar o corpus de textos fornecido abaixo, que contém documentos escritos por um advogado.
-Seu objetivo é identificar o estilo de escrita deste advogado para criar um perfil de estilo e um prompt de sistema personalizado para uma IA (Jus IA).
+Seu objetivo é identificar o estilo de escrita deste advogado para criar um perfil de estilo e um conjunto de instruções personalizadas para uma IA (Jus IA).
 
 Corpus:
 ${corpus}
@@ -41,7 +41,7 @@ ${corpus}
 ---
 Instruções:
 1. Analise detalhadamente o estilo: tom, vocabulário, estrutura, uso de citações, formalidade, etc.
-2. Gere um resumo em texto corrido.
+2. Gere um resumo em texto corrido que descreva "Seu estilo de escrita". **Importante**: Inclua elogios genuínos sobre a clareza, persuasão ou técnica do advogado. Faça com que ele se sinta valorizado.
 3. Avalie as seguintes dimensões de 0 a 100:
    - Formalidade
    - Complexidade das frases
@@ -50,7 +50,12 @@ Instruções:
    - Foco em fatos
    - Foco em fundamentação
 4. Liste bullets com observações práticas sobre o estilo.
-5. Crie um SYSTEM PROMPT completo, em português, para configurar uma IA para escrever EXATAMENTE como esse advogado. O prompt deve incluir regras fixas e exemplos de instruções baseados no estilo analisado.
+5. Crie um conjunto de **"Instruções do seu estilo de escrita"** (antigo System Prompt) para configurar uma IA.
+   - Este texto deve ser detalhado e estabelecer regras claras.
+   - Defina a **quantidade de texto** típica (conciso vs. detalhado).
+   - Defina o **nível de formalidade** e o **tom de fala** (ex: combativo, técnico, conciliador).
+   - Defina o **sentimento** da escrita.
+   - Inclua exemplos de como estruturar os argumentos baseados no estilo analisado.
 
 Retorne APENAS um JSON válido com a seguinte estrutura, sem markdown ou texto adicional:
 {

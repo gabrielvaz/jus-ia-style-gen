@@ -134,6 +134,11 @@ export default function CreateProfilePage() {
                                         style={{ width: `${Math.min((inputText.length / 5000) * 100, 100)}%` }}
                                     />
                                 </div>
+                                <p className="text-neutral-500">
+                                    Para melhores resultados, envie documentos que representem bem seu estilo, como:
+                                    <br />
+                                    <span className="font-medium text-neutral-700">Petições Iniciais, Contratos ou Pareceres Jurídicos</span> escritos por você.
+                                </p>
                                 <p className="text-xs text-neutral-500">
                                     Mínimo: 1000 • Recomendado: 3000+ • Ideal: 5000+
                                 </p>
