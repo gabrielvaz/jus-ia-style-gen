@@ -1,11 +1,14 @@
 import axios from "axios";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
-const MODEL = "x-ai/grok-4.1-fast:free";
+const MODEL = "google/gemini-2.0-flash-exp:free";
 
 // Debug log (será removido após verificação)
 if (typeof window === 'undefined') {
     console.log('[Server] OPENROUTER_API_KEY exists:', !!OPENROUTER_API_KEY);
+    if (OPENROUTER_API_KEY) {
+        console.log('[Server] Key start:', OPENROUTER_API_KEY.substring(0, 10) + '...');
+    }
 }
 
 export interface AnalysisResult {
