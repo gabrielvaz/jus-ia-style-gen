@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         console.error("Error in /api/analyze-style:", error);
         return NextResponse.json(
-            { error: "Internal server error" },
+            { error: "Internal server error", details: error instanceof Error ? error.message : String(error) },
             { status: 500 }
         );
     }

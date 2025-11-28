@@ -4,12 +4,12 @@ if (typeof global.DOMMatrix === 'undefined') {
     global.DOMMatrix = class DOMMatrix { };
 }
 
-// @ts-ignore
-const pdf = require("pdf-parse");
 import mammoth from "mammoth";
 
 export async function extractText(fileBuffer: Buffer, fileType: string): Promise<string> {
     if (fileType === "application/pdf") {
+        // @ts-ignore
+        const pdf = require("pdf-parse");
         const data = await pdf(fileBuffer);
         return data.text;
     } else if (

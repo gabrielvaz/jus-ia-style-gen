@@ -51,7 +51,11 @@ export default function ProcessingPage() {
                 setTimeout(() => router.push("/profile"), 1000);
             } catch (error) {
                 console.error("Analysis failed:", error);
-                alert("Ocorreu um erro na análise. Tente novamente.");
+                // alert("Ocorreu um erro na análise. Tente novamente.");
+                // router.push("/create");
+                setAnalysisResult(null); // Ensure no result is shown
+                // We could add a UI state for error here, but for now let's just stop the redirect so we can see the console/network error
+                alert("Erro na análise: " + (axios.isAxiosError(error) ? error.response?.data?.details || error.message : String(error)));
                 router.push("/create");
             }
         };
@@ -63,7 +67,7 @@ export default function ProcessingPage() {
 
     return (
         <main className="min-h-screen bg-neutral-50 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-            <div className="max-w-md w-full space-y-8">
+            <div className="max-w-2xl w-full space-y-8">
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-neutral-900 mb-2">
                         Analisando seu estilo
@@ -73,35 +77,47 @@ export default function ProcessingPage() {
                     </p>
                 </div>
 
-                <Card className="p-8 space-y-6">
-                    <div className="flex justify-center mb-8">
-                        <div className="relative">
-                            <div className="w-16 h-16 border-4 border-neutral-100 rounded-full"></div>
-                            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
-                            <div className="absolute inset-0 flex items-center justify-center font-bold text-primary text-sm">
-                                {Math.min((currentStep + 1) * 20, 99)}%
-                            </div>
+                <Card className="p-8 space-y-8">
+                    {/* Linear Progress Bar */}
+                    <div className="w-full space-y-2">
+                        <div className="flex justify-between text-sm font-medium text-neutral-500">
+                            <span>Progresso</span>
+                            <span>{Math.min((currentStep + 1) * 20, 100)}%</span>
+                        </div>
+                        <div className="w-full bg-neutral-100 rounded-full h-2.5 overflow-hidden">
+                            <div
+                                className="bg-primary h-2.5 rounded-full transition-all duration-500 ease-out"
+                                style={{ width: `${Math.min((currentStep + 1) * 20, 100)}%` }}
+                            ></div>
                         </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                         {STEPS.map((step, index) => (
                             <div
                                 key={index}
                                 className={cn(
-                                    "flex items-center gap-3 transition-all duration-500",
-                                    index > currentStep ? "opacity-30" : "opacity-100"
+                                    "flex items-center gap-4 p-4 rounded-lg transition-all duration-500 border",
+                                    index === currentStep
+                                        ? "bg-primary/5 border-primary/20 shadow-sm"
+                                        : "bg-transparent border-transparent opacity-50"
                                 )}
                             >
                                 {index < currentStep ? (
-                                    <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                                        <CheckCircle2 className="w-5 h-5 text-green-600" />
+                                    </div>
                                 ) : index === currentStep ? (
-                                    <Loader2 className="w-5 h-5 text-primary animate-spin flex-shrink-0" />
+                                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                        <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                                    </div>
                                 ) : (
-                                    <div className="w-5 h-5 rounded-full border-2 border-neutral-200 flex-shrink-0" />
+                                    <div className="w-8 h-8 rounded-full bg-neutral-100 flex items-center justify-center flex-shrink-0">
+                                        <div className="w-3 h-3 rounded-full bg-neutral-300" />
+                                    </div>
                                 )}
                                 <span className={cn(
-                                    "text-sm font-medium",
+                                    "text-lg font-medium",
                                     index === currentStep ? "text-neutral-900" : "text-neutral-500"
                                 )}>
                                     {step}
