@@ -25,6 +25,12 @@ export async function analyzeWritingStyle(corpus: string): Promise<AnalysisResul
         throw new Error("OPENROUTER_API_KEY is not configured");
     }
 
+    // Trim key to avoid copy-paste whitespace issues
+    const apiKey = OPENROUTER_API_KEY.trim();
+
+    // Debug log to verify key presence and format (masked)
+    console.log(`[Server] Using API Key: ${apiKey.substring(0, 8)}...${apiKey.substring(apiKey.length - 4)} (Length: ${apiKey.length})`);
+
     const prompt = `
 Você é um especialista em análise linguística e jurídica. Sua tarefa é analisar o corpus de textos fornecido abaixo, que contém documentos escritos por um advogado.
 Seu objetivo é identificar o estilo de escrita deste advogado para criar um perfil de estilo e um prompt de sistema personalizado para uma IA (Jus IA).
@@ -82,7 +88,7 @@ Retorne APENAS um JSON válido com a seguinte estrutura, sem markdown ou texto a
                 },
                 {
                     headers: {
-                        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                        "Authorization": `Bearer ${apiKey}`,
                         "Content-Type": "application/json",
                         "HTTP-Referer": "https://jus-ia-style-gen.vercel.app",
                         "X-Title": "Jus IA Style Gen",
