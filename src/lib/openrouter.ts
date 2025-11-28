@@ -3,6 +3,11 @@ import axios from "axios";
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 const MODEL = "x-ai/grok-4.1-fast:free";
 
+// Debug log (será removido após verificação)
+if (typeof window === 'undefined') {
+    console.log('[Server] OPENROUTER_API_KEY exists:', !!OPENROUTER_API_KEY);
+}
+
 export interface AnalysisResult {
     summary: string;
     dimensions: {
